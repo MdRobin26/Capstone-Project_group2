@@ -1,1 +1,40 @@
+Feasibility Study
+This project is deemed feasible based on strong market demand for real estate management software, Morang's need to optimize workflows, the team's technical expertise,
+reasonable timeline of around 45 days and significant benefits outweighing costs.The system will improve efficiency by 40%, increase quality control by 60%, 
+and provide a 20% competitive advantage. With over 20 competing agencies locally, the online system gives Morang an edge. 
+It is recommended they move forward with developing the solution to address operational pain points.
+
+Key Functional Requirements
+Some of the key functional requirements are:
+•	Inventory management
+•	Data Analytics
+•	Landlord/tenant portals
+•	Administrative tools
+•	Integration with listing platforms
+•	Housekeeping module
+•	Online booking system
+
+Expected Benefits
+The system aims to provide benefits like:
+•	Improved security
+•	Enhanced accuracy
+•	Better control and oversight
+•	Increased automation
+•	Greater efficiency
+•	Improved service quality
+•	User-friendly interface
+•	Faster processing
+
+
+
+Technology Stack
+•	Front-end ( HTML,CSS )
+•	Back-end ( Php, Laravel)
+•	Database ( SQL ) 
+•	Other Languages ( JS, Jquery, Ajax )
+
+Conclusion
+In summary, the project aims to develop an online real estate management system that can help Morang Real Estate optimize and automate its business operations 
+in an efficient, user-friendly, and scalable manner. The system will improve manageability and accessibility for the client and all stakeholders.
+
 
