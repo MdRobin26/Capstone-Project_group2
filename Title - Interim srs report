@@ -669,9 +669,231 @@ About:
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
   <script src="assets/vendor/php-email-form/validate.js"></script>
 
+
   <!-- Template Main JS File -->
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/main.js">
 
 </body>
 
 </html>
+
+
+
+Properties:
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Property extends Model
+{
+    protected $fillable = [
+        'title',    'price',        'featured',     'purpose',  'type',         'image',
+        'slug',     'bedroom',      'bathroom',     'city',     'city_slug',    'address',
+        'area',     'agent_id',     'description',  'video',    'floor_plan',   
+        'location_latitude',        'location_longitude',       'nearby',
+        
+    ];
+
+    public function features()
+    {
+        return $this->belongsToMany(Feature::class)->withTimestamps();
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class,'agent_id');
+    }
+
+    public function gallery()
+    {
+        return $this->hasMany(PropertyImageGallery::class);
+    }
+
+    public function comments()
+    {
+        return $this->morphMany('App\Comment', 'commentable');
+    }
+
+    public function rating()
+    {
+        return $this->hasMany(Rating::class, 'property_id');
+    }
+
+}
+
+
+Album:
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Album extends Model
+{
+    protected $table = 'albums';
+    protected $fillable = ['name','user_id'];
+
+    public function galleryimages()
+    {
+        return $this->hasMany(Gallery::class);
+    }
+}
+
+
+
+Category:
+?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Category extends Model
+{
+    protected $fillable = ['name','slug','image'];
+
+
+    public function posts()
+    {
+        return $this->belongsToMany(Post::class)->withTimestamps();
+    }
+}
+
+
+
+Comment:
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Comment extends Model
+{
+    protected $fillable = [
+        'user_id', 
+        'body', 
+        'parent', 
+        'parent_id', 
+        'approved', 
+        'commentable_id', 
+        'commentable_type'
+    ];
+
+    public function commentable()
+    {
+        return $this->morphTo();
+    }
+
+    function users()
+    {
+        return $this->belongsTo(User::class,'user_id','id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany('App\Comment', 'parent_id', 'id');
+    }
+}
+
+
+
+
+Feature:
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Feature extends Model
+{
+    protected $fillable = ['name','slug'];
+
+    
+    public function properties()
+    {
+        return $this->belongsToMany(Property::class)->withTimestamps();
+    }
+}
+
+
+
+Gallery:
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Gallery extends Model
+{
+    protected $fillable = ['album_id','image','size','type','link'];
+
+    public function album()
+    {
+        return $this->belongsTo(Album::class);
+    }
+}
+
+
+
+
+Message:
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Message extends Model
+{
+    protected $fillable = ['agent_id','user_id','property_id','name','email','phone','message','status'];
+}
+
+
+
+Post:
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Post extends Model
+{
+    protected $fillable = ['user_id','title','slug','image','body','view_count','status','is_approved'];
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class)->withTimestamps();
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class)->withTimestamps();
+    }
+
+    public function comments()
+    {
+        return $this->morphMany('App\Comment', 'commentable');
+    }
+
+    public static function archives()
+    {
+        return static::selectRaw('year(created_at) year, monthname(created_at) month, count(*) published')
+                    ->groupBy('year','month')
+                    ->orderByRaw('min(created_at) desc')
+                    ->get()
+                    ->toArray();
+    }
+}
