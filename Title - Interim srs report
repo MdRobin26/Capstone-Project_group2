@@ -897,3 +897,262 @@ class Post extends Model
                     ->toArray();
     }
 }
+
+
+
+
+
+Properties:
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Property extends Model
+{
+    protected $fillable = [
+        'title',    'price',        'featured',     'purpose',  'type',         'image',
+        'slug',     'bedroom',      'bathroom',     'city',     'city_slug',    'address',
+        'area',     'agent_id',     'description',  'video',    'floor_plan',   
+        'location_latitude',        'location_longitude',       'nearby',
+        
+    ];
+
+    public function features()
+    {
+        return $this->belongsToMany(Feature::class)->withTimestamps();
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class,'agent_id');
+    }
+
+    public function gallery()
+    {
+        return $this->hasMany(PropertyImageGallery::class);
+    }
+
+    public function comments()
+    {
+        return $this->morphMany('App\Comment', 'commentable');
+    }
+
+    public function rating()
+    {
+        return $this->hasMany(Rating::class, 'property_id');
+    }
+
+}
+
+
+
+
+PropertyGallery:
+?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class PropertyImageGallery extends Model
+{
+    protected $fillable = ['property_id', 'name', 'size'];
+
+    public function property()
+    {
+        return $this->belongsTo('App\Property');
+    }
+}
+
+
+
+
+
+Ratings:
+
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Rating extends Model
+{
+    protected $fillable = [
+        'user_id',
+        'property_id',
+        'rating',
+        'type'
+    ];
+}
+
+
+
+Role:
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Role extends Model
+{
+    protected $fillable = ['name','slug'];
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+}
+
+
+
+
+Service:
+
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Service extends Model
+{
+    protected $fillable = ['title','description','icon','service_order'];
+}
+
+
+
+
+
+Setting:
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Setting extends Model
+{
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'address',
+        'footer',
+        'aboutus',
+        'facebook',
+        'twitter',
+        'linkedin',
+    ];
+}
+
+
+
+
+Slider:
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Slider extends Model
+{
+    protected $fillable = ['title','description','image'];
+}
+
+
+
+
+
+Tag:
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Tag extends Model
+{
+    protected $fillable = ['name','slug'];
+
+    
+    public function posts()
+    {
+        return $this->belongsToMany(Post::class)->withTimestamps();
+    }
+}
+
+
+
+Testimonial:
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Tag extends Model
+{
+    protected $fillable = ['name','slug'];
+
+    
+    public function posts()
+    {
+        return $this->belongsToMany(Post::class)->withTimestamps();
+    }
+}
+
+
+
+
+User:
+<?php
+
+namespace App;
+
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class User extends Authenticatable
+{
+    use Notifiable;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'email', 'password', 'role_id', 'username', 'image', 'about'
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password', 'remember_token',
+    ];
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function hasRole()
+    {
+        return $this->role->name;
+    } 
+}
+
+
